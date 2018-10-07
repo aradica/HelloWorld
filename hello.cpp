@@ -1,19 +1,21 @@
 #include <iostream>
 #include <string>
-#include <algorithm> 
-using namespace std;
+#include <algorithm>
+#include <vector>
 
+using namespace std;
 
 struct Fraction{
     //  n/d
-    long int n, d;
-    Fraction(long int numerator = 0, long int denomintaor = 1){
+    int n, d;
+    Fraction(int numerator = 0, int denomintaor = 1){
         //if both are negative they cancel out OR if d < 0 then pass it to n for easier computation
-        if((n < 0 && d < 0) || (d < 0)){
-            n = -1*n;
-            d = -1*d;
+        if((numerator < 0 && denomintaor < 0) || (denomintaor < 0)){
+
+            numerator *= -1;
+            denomintaor *= -1;
         }
-        int g = __gcd(numerator, denomintaor);
+        int g = abs(__gcd(numerator, denomintaor));
         if (g == 1){
             n = numerator;
             d = denomintaor;
@@ -36,6 +38,7 @@ struct Fraction{
             }
             else{
                 if (d > other.d){
+                    
                     return Fraction(n + other.n*(d/other.d), d);
                 }
                 else{
@@ -57,13 +60,15 @@ struct Fraction{
 
     //todo: make this better
     Fraction operator / (Fraction other){ 
-        Fraction f1(n, d);
         Fraction f2 = other.inverse();
-        return f1 * f2;
+        int g1 = __gcd(n, other.d);
+        int g2 = __gcd(other.n, d);
+        return Fraction((n/g1) * (f2.n/g2), (d/g2) * (f2.d/g1));
     }
     void print(){
         cout << n << "/" << d << "\n";
     }
+
     string sign(){
         if (n < 0){
             return "-";
@@ -78,14 +83,12 @@ struct Fraction{
 };
 
 
+
+
 int main(){
-    long int N, D;
-    cout << "Numerator: ";
-    cin >> N;
-    cout << "Denominator: ";
-    cin >> D;
-    Fraction f(N, D);
-    f.print();
-    cout << f.sign() << "\n";
+    Fraction f1(2, 5);
+    Fraction f2(-1, 5);
+    Fraction f3 = f1+f2;
+    f3.print();
     return 0;
 }
